@@ -22,11 +22,13 @@ class ExpenseItem extends StatelessWidget {
             SizedBox(height: 4,),
             Row(
               children: [
-               Text('\$ ${expense.amount.toStringAsFixed(2)}'), // 12.3433 => 12.34 and curly braces tell dart that consider this as a single value
+               Text('\₹ ${expense.amount.toStringAsFixed(2)}'), // 12.3433 => 12.34 and curly braces tell dart that consider this as a single value
                 Spacer(), // used in coln or row, tell dart to take as much space as possible between the widgets
                 Row(
                   children: [
-
+                    Icon(categoryIcons[expense.category]), // now icons are generated dynamically based on the category
+                    SizedBox(width: 8,),
+                    Text(expense.formattedDate), // don`t add () becoz it is getter not a method here
                   ],
                 ),
 
