@@ -32,10 +32,26 @@ final List<Expense> _registeredExpenses = [
 void _openAddExpenseOverlay() {
   //showModalBottomSheet is built in method of flutter
        showModalBottomSheet(
+         isScrollControlled: true,
            context: context,
-           builder: (ctx) => NewExpense(), // new expense widget
+           builder: (ctx) => NewExpense(onAddExpense:_addExpense), // new expense widget
        );
 }
+
+ void _addExpense(Expense expense)
+ {
+  setState(() {
+    _registeredExpenses.add(expense); // add an item to the list
+
+  });
+ }
+
+ void _removeExpense(Expense expense) { // this ensures that the expense is also removed internally not just externally
+
+   setState(() {
+     _registeredExpenses.remove(expense);
+   });
+ }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +70,7 @@ void _openAddExpenseOverlay() {
         children: [
           Text('The chart'),
           Expanded(
-              child: ExpensesList(expenses: _registeredExpenses)),
+              child: ExpensesList(expenses: _registeredExpenses, onRemoveExpense: _removeExpense,)),
         ],
       ),
     );

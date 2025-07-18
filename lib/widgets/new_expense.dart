@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:expense_tracker/models/expense.dart';
+
 class NewExpense extends StatefulWidget {
 
-  const NewExpense({super.key});
+  const NewExpense({super.key, required this.onAddExpense});
+
+  final void Function(Expense expense) onAddExpense;
+
   @override
   State<NewExpense> createState() {
     return _NewExpenseState();
@@ -16,9 +21,11 @@ class _NewExpenseState extends State<NewExpense> {
 //   _enteredTitle = inputValue;
 // } // Flutter gives TextEditingController to manage autonomously the text entered by the user
 
-final _titleController = TextEditingController();
-final _amountController = TextEditingController();
-DateTime? _selectedDate ;
+ final _titleController = TextEditingController();
+ final _amountController = TextEditingController();
+ DateTime? _selectedDate ;
+ Category _selectedCategory = Category.leisure;
+
 // function to trigger picking a date
   void _presentDatePicker() async
   {
@@ -38,6 +45,37 @@ DateTime? _selectedDate ;
    });
   }
 
+  //validating user input
+  void _submitExpenseData () {
+   final enteredAmount = double.tryParse( _amountController.text); // tryParse('hello') => null, tryParse('1.12') => 1.12
+   final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+
+   if(_titleController.text.trim().isEmpty || amountIsInvalid || _selectedDate == null) {
+     // show error message
+     showDialog(context: context,
+         builder: (ctx) => AlertDialog( // Error dialog box
+           title: Text('Invalid Input'),
+           content: Text('Please make sure a valid title, amount,date and category is entered.'),
+           actions: [
+             TextButton(
+                 onPressed: () {Navigator.pop(ctx); },
+                 child: Text('Okay'),
+             ),
+           ],
+         )
+     );
+     return;
+   }
+   widget.onAddExpense(
+     Expense(
+       title: _titleController.text,
+       amount: enteredAmount,
+       date: _selectedDate!,
+       category: _selectedCategory,
+     ),
+   );
+   Navigator.pop(context); // to close the overlay after adding expense
+}
 
 @override
   void dispose() {
@@ -49,7 +87,7 @@ DateTime? _selectedDate ;
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(16,48,16,16),
       child: Column(
         children: [
           TextField(
@@ -78,7 +116,10 @@ DateTime? _selectedDate ;
                    mainAxisAlignment: MainAxisAlignment.end,
                    crossAxisAlignment: CrossAxisAlignment.center,
                    children: [
-                     Text('Selected Date'),
+                     Text(
+                         _selectedDate == null?
+                         'No date selected'
+                             : formatter.format(_selectedDate!)),
                      IconButton(
                        onPressed: _presentDatePicker,
                          icon: Icon(
@@ -87,24 +128,39 @@ DateTime? _selectedDate ;
                    ],
                  ),
                ),
-
-
             ],
           ),
-
+          SizedBox(height: 16,),
           Row(
             children: [
+              DropdownButton(
+                value: _selectedCategory,
+                  items: Category.values.map(
+                        (category) => DropdownMenuItem(
+                          value: category,
+                          child: Text(
+                            category.name.toUpperCase(),
+                          ),
+                        ),
+                  ).toList(),
+                  onChanged: (value){
+                    if(value == null) {
+                      return;
+                    }
+                     setState(() {
+                       _selectedCategory = value;
+                     });
+                  }
+                  ), // flutter now knows that value here is of type category
+              Spacer(),
               TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Cancel')),
-
+                  child: Text('Cancel')
+              ),
               ElevatedButton(
-                  onPressed: () {
-                        print(_titleController.text);
-                        print(_amountController.text);
-                  },
+                  onPressed: _submitExpenseData,
                   child: Text('Save Expense')),
             ],
           ),
