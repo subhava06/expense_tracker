@@ -33,6 +33,7 @@ final List<Expense> _registeredExpenses = [
 void _openAddExpenseOverlay() {
   //showModalBottomSheet is built in method of flutter
        showModalBottomSheet(
+         useSafeArea: true,
          isScrollControlled: true,
            context: context,
            builder: (ctx) => NewExpense(onAddExpense:_addExpense), // new expense widget

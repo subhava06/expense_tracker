@@ -86,86 +86,180 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.fromLTRB(16,48,16,16),
-      child: Column(
-        children: [
-          TextField(
-            controller: _titleController, // to save user input
-            maxLength : 50,
-            //keyboardType:
-            decoration: InputDecoration(
-              label: Text('Title'),
-            ),
-          ),
-          Row(
-            children: [
-              Expanded( // Textfield and row by default contradict eachother so it is necessary to wrap in Expanded to ensure it takes as much space but not more
-                child: TextField(
-                  controller: _amountController, // to save user input
-                  //maxLength : 50,
-                  keyboardType: TextInputType.number ,
-                  decoration: InputDecoration(
-                    prefixText: '\₹ ',
-                    label: Text('Amount'),
-                  ),),
-              ),
-               const SizedBox(width: 16), // for spacing b/wn amount textfield and date picker
-               Expanded( // wrapped since a row inside another row
-                 child: Row( // to gather date input together
-                   mainAxisAlignment: MainAxisAlignment.end,
-                   crossAxisAlignment: CrossAxisAlignment.center,
+  final keyboardSpace =  MediaQuery.of(context).viewInsets.bottom;
+     return LayoutBuilder(builder: (ctx, constraints) {
+      final width = constraints.maxWidth;
+
+       return SizedBox(
+         height: double.infinity,
+         child: SingleChildScrollView(
+           child: Padding(
+             padding: EdgeInsets.fromLTRB(16,48,16, keyboardSpace+ 16),
+             child: Column(
+               children: [
+                 if(width >=600)
+                   Row(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                     Expanded(
+                       child: TextField(
+                         controller: _titleController, // to save user input
+                         maxLength : 50,
+                         //keyboardType:
+                         decoration: InputDecoration(
+                           label: Text('Title'),
+                         ),
+                       ),
+                     ),
+                     SizedBox(width: 24,),
+                     Expanded( // Textfield and row by default contradict eachother so it is necessary to wrap in Expanded to ensure it takes as much space but not more
+                       child: TextField(
+                         controller: _amountController, // to save user input
+                         //maxLength : 50,
+                         keyboardType: TextInputType.number ,
+                         decoration: InputDecoration(
+                           prefixText: '\₹ ',
+                           label: Text('Amount'),
+                         ),),
+                     ),
+                   ],)
+                 else
+                 TextField(
+                   controller: _titleController, // to save user input
+                   maxLength : 50,
+                   //keyboardType:
+                   decoration: InputDecoration(
+                     label: Text('Title'),
+                   ),
+                 ),
+                 if(width >=600)
+                   Row(children: [
+                     DropdownButton(
+                         value: _selectedCategory,
+                         items: Category.values.map(
+                               (category) => DropdownMenuItem(
+                             value: category,
+                             child: Text(
+                               category.name.toUpperCase(),
+                             ),
+                           ),
+                         ).toList(),
+                         onChanged: (value){
+                           if(value == null) {
+                             return;
+                           }
+                           setState(() {
+                             _selectedCategory = value;
+                           });
+                         }
+                     ),
+                     SizedBox(width: 24,),
+                     Expanded( // wrapped since a row inside another row
+                       child: Row( // to gather date input together
+                         mainAxisAlignment: MainAxisAlignment.end,
+                         crossAxisAlignment: CrossAxisAlignment.center,
+                         children: [
+                           Text(
+                               _selectedDate == null?
+                               'No date selected'
+                                   : formatter.format(_selectedDate!)),
+                           IconButton(
+                             onPressed: _presentDatePicker,
+                             icon: Icon(
+                               Icons.calendar_month,),
+                           ),
+                         ],
+                       ),
+                     ),
+
+                   ],)
+                 else
+                 Row(
                    children: [
-                     Text(
-                         _selectedDate == null?
-                         'No date selected'
-                             : formatter.format(_selectedDate!)),
-                     IconButton(
-                       onPressed: _presentDatePicker,
-                         icon: Icon(
-                           Icons.calendar_month,),
+                     Expanded( // Textfield and row by default contradict eachother so it is necessary to wrap in Expanded to ensure it takes as much space but not more
+                       child: TextField(
+                         controller: _amountController, // to save user input
+                         //maxLength : 50,
+                         keyboardType: TextInputType.number ,
+                         decoration: InputDecoration(
+                           prefixText: '\₹ ',
+                           label: Text('Amount'),
+                         ),),
+                     ),
+                     const SizedBox(width: 16), // for spacing b/wn amount textfield and date picker
+                     Expanded( // wrapped since a row inside another row
+                       child: Row( // to gather date input together
+                         mainAxisAlignment: MainAxisAlignment.end,
+                         crossAxisAlignment: CrossAxisAlignment.center,
+                         children: [
+                           Text(
+                               _selectedDate == null?
+                               'No date selected'
+                                   : formatter.format(_selectedDate!)),
+                           IconButton(
+                             onPressed: _presentDatePicker,
+                             icon: Icon(
+                               Icons.calendar_month,),
+                           ),
+                         ],
+                       ),
                      ),
                    ],
                  ),
-               ),
-            ],
-          ),
-          SizedBox(height: 16,),
-          Row(
-            children: [
-              DropdownButton(
-                value: _selectedCategory,
-                  items: Category.values.map(
-                        (category) => DropdownMenuItem(
-                          value: category,
-                          child: Text(
-                            category.name.toUpperCase(),
-                          ),
-                        ),
-                  ).toList(),
-                  onChanged: (value){
-                    if(value == null) {
-                      return;
-                    }
-                     setState(() {
-                       _selectedCategory = value;
-                     });
-                  }
-                  ), // flutter now knows that value here is of type category
-              Spacer(),
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('Cancel')
-              ),
-              ElevatedButton(
-                  onPressed: _submitExpenseData,
-                  child: Text('Save Expense')),
-            ],
-          ),
-        ],
-      ),
-    );
+                 SizedBox(height: 16,),
+                 if(width >=600)
+                   Row(children: [
+                     Spacer(),
+                     TextButton(
+                         onPressed: () {
+                           Navigator.pop(context);
+                         },
+                         child: Text('Cancel')
+                     ),
+                     ElevatedButton(
+                         onPressed: _submitExpenseData,
+                         child: Text('Save Expense')),
+                   ],)
+                 else
+                 Row(
+                   children: [
+                     DropdownButton(
+                         value: _selectedCategory,
+                         items: Category.values.map(
+                               (category) => DropdownMenuItem(
+                             value: category,
+                             child: Text(
+                               category.name.toUpperCase(),
+                             ),
+                           ),
+                         ).toList(),
+                         onChanged: (value){
+                           if(value == null) {
+                             return;
+                           }
+                           setState(() {
+                             _selectedCategory = value;
+                           });
+                         }
+                     ), // flutter now knows that value here is of type category
+                     Spacer(),
+                     TextButton(
+                         onPressed: () {
+                           Navigator.pop(context);
+                         },
+                         child: Text('Cancel')
+                     ),
+                     ElevatedButton(
+                         onPressed: _submitExpenseData,
+                         child: Text('Save Expense')),
+                   ],
+                 ),
+               ],
+             ),
+           ),
+         ),
+       );
+     });
+
   }
 }
