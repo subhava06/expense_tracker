@@ -36,38 +36,39 @@ Category (Dropdown)
 
 🛠 Installation
 
-1.Clone the repository:
-git clone https://github.com/your-username/flutter-expense-tracker.git
-cd flutter-expense-tracker
+<p> 
+1.Clone the repository: <br>
+  git clone https://github.com/your-username/flutter-expense-tracker.git <br>
+  cd flutter-expense-tracker <br>
 
-2. Install dependencies:
-   flutter pub get
+2.Install dependencies: <br>
+  flutter pub get <br>
    
-3.Run the app:
-  flutter run
+3.Run the app: <br>
+  flutter run <br>
+  
+💡Future Improvements<br>
 
-💡 Future Improvements
+ Add local database (SQFlite / Hive) for persistent storage <br>
 
-Add local database (SQFlite / Hive) for persistent storage
+ Export expense reports as CSV/PDF<br>
 
-Export expense reports as CSV/PDF
+ Add budget tracking & notifications<br>
 
-Add budget tracking & notifications
+🤝Contributing <br>
 
-🤝 Contributing
+  Contributions are welcome! Feel free to fork the repo and create a pull request. <br>
 
-Contributions are welcome! Feel free to fork the repo and create a pull request.
+📜License
 
-📜 License
+  This project is licensed under the MIT License. <br>
 
-This project is licensed under the MIT License.
+👨‍💻Author <br>
+ Subhava Ojha<br>
+ LinkedIn Profile: www.linkedin.com/in/subhava-ojha <br>
+ Gmail: subhavaojha2003@gmail.com<br>
 
-👨‍💻 Author
- Subhava Ojha
- LinkedIn Profile: www.linkedin.com/in/subhava-ojha
- Gmail: subhavaojha2003@gmail.com
-
-⭐ Show Your Support
-  If you like this project, give it a star ⭐ on GitHub!
+⭐Show Your Support<br>
+   If you like this project, give it a star ⭐ on GitHub!
 
     
